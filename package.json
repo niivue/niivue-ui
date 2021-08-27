@@ -1,0 +1,19 @@
+{
+  "name": "niivue-ui",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "docs" : "cp -r dist/* docs/"
+  },
+  "dependencies": {
+    "vue": "^3.2.6"
+  },
+  "devDependencies": {
+    "@niivue/niivue": "^0.5.1",
+    "@vitejs/plugin-vue": "^1.6.0",
+    "@vue/compiler-sfc": "^3.0.5",
+    "vite": "^2.5.1"
+  }
+}
