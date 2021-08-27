@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "docs" : "cp -r dist/* docs/"
+    "ghpages" : "vite build --base /niivue-ui/ --outDir docs"
   },
   "dependencies": {
     "vue": "^3.2.6"
