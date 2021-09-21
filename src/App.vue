@@ -4,10 +4,7 @@
       <div class="d-flex align-center">
         <h2>NiiVue</h2>
       </div>
-
       <v-spacer></v-spacer>
-
-
       <v-btn
         text
         @click="showSettings=!showSettings"
@@ -27,6 +24,7 @@
     </v-app-bar>
 
     <v-main>
+      
       <v-container fluid>
         <v-row no-gutters align-content="space-between" justify="space-between">
           <image-list v-on:visibilityChange="visibilityChange" :images=volumeList>
@@ -34,6 +32,12 @@
           </image-list>
           <!-- <v-spacer></v-spacer> -->
         <v-col cols="12" sm="12" md="9" lg="9" class="my-2">
+          <v-row class="mb-2">
+            <v-col cols="6">
+              <v-select :items="sliceTypes" v-model="sliceType" item-text="text" item-value="value" @change="setSliceType" solo dense hide-details>
+              </v-select>
+            </v-col>
+          </v-row>
           <div style="width: 100%">
             <canvas id="gl" height="480" width="640"> </canvas>
           </div>
@@ -70,6 +74,14 @@ export default {
     vox: [0, 0, 0], // array of length 3 for voxel coordinates
     // volume list is an array of any length with image objects
     // to load.
+    sliceTypes: [
+      {text: '2D Multiplanar (A + C + S)', value: nv.sliceTypeMultiplanar},
+      {text: '3D', value: nv.sliceTypeRender},
+      {text: 'Axial', value: nv.sliceTypeAxial},
+      {text: 'Coronal', value: nv.sliceTypeCoronal},
+      {text: 'Sagittal', value: nv.sliceTypeSagittal}
+    ],
+    sliceType: {text: '2D Multiplanar (A + C + S)', value: nv.sliceTypeMultiplanar},
     volumeList: [
       {
         url: "./mni152.nii.gz",
@@ -117,6 +129,10 @@ export default {
       this.nv.setOpacity(index, visible)
       // this.volumeList[index].visible = visible
       // this.nv.updateGLVolume()
+    },
+    setSliceType: function(sliceType) {
+      console.log(sliceType)
+      this.nv.setSliceType(sliceType)
     }
   },
   mounted() {
@@ -128,6 +144,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 </style>
