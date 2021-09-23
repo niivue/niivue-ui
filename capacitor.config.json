@@ -1,0 +1,6 @@
+{
+  "appId": "com.niivue.app",
+  "appName": "NiiVue",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

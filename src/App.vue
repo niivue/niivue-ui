@@ -84,14 +84,14 @@ export default {
     sliceType: {text: '2D Multiplanar (A + C + S)', value: nv.sliceTypeMultiplanar},
     volumeList: [
       {
-        url: "./mni152.nii.gz",
+        url: "./mni152.nii",
         volume: { hdr: null, img: null },
         colorMap: "gray",
         opacity: 100,
         visible: true,
       },
       {
-        url: "./hippo.nii.gz",
+        url: "./hippo.nii",
         volume: { hdr: null, img: null },
         colorMap: "winter",
         opacity: 100,
