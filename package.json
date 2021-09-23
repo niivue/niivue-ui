@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && npx cap sync",
     "lint": "vue-cli-service lint",
     "ghpages": "vue-cli-service build --dest docs"
   },
   "dependencies": {
+    "@capacitor/android": "^3.2.3",
+    "@capacitor/cli": "^3.2.3",
+    "@capacitor/core": "^3.2.3",
+    "@capacitor/ios": "^3.2.3",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vuetify": "^2.4.0"
