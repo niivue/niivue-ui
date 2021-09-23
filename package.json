@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && npx cap sync",
     "lint": "vue-cli-service lint",
     "ghpages": "vue-cli-service build --dest docs"
   },
