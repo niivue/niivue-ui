@@ -8,7 +8,7 @@
       <v-btn
         text
         @click="showSettings=!showSettings"
-        disabled
+        
       >
         <v-icon>mdi-cog</v-icon>
       </v-btn>
@@ -27,7 +27,12 @@
       
       <v-container fluid>
         <v-row no-gutters align-content="space-between" justify="space-between">
-          <image-list v-on:visibilityChange="visibilityChange" :images=volumeList>
+          <image-list 
+            v-on:removeImage="removeImage" 
+            v-on:visibilityChange="visibilityChange" 
+            v-on:setColormap="setColormap"
+            :images=volumeList
+            :colormaps="this.nv.colorMaps()">
             
           </image-list>
           <!-- <v-spacer></v-spacer> -->
@@ -45,7 +50,13 @@
         
         </v-row>
       </v-container>
-      <settings v-on:close-settings="showSettings=!showSettings" :show=showSettings></settings>
+      <settings 
+        v-on:close-settings="showSettings=!showSettings" 
+        v-on:setCrosshairColor="setCrosshairColor"
+        v-on:setSelectionBoxColor="setSelectionBoxColor"
+        v-on:setBackgroundColor="setBackgroundColor"
+        v-on:setCrosshairWidth="setCrosshairWidth"
+        :show=showSettings></settings>
     </v-main>
   </v-app>
 </template>
@@ -130,16 +141,43 @@ export default {
       // this.volumeList[index].visible = visible
       // this.nv.updateGLVolume()
     },
+    // removeImage: function(index) {
+      // this.volumeList.splice(index, 1)
+      // this.nv.updateGLVolume()
+    // },
     setSliceType: function(sliceType) {
       console.log(sliceType)
       this.nv.setSliceType(sliceType)
+    },
+    setColormap: function(index, colormap) {
+      this.volumeList[index].colorMap = colormap
+      this.nv.updateGLVolume()
+    },
+    setCrosshairColor: function(color) {
+      this.nv.setCrosshairColor(color)
+    },
+    setSelectionBoxColor: function(color) {
+      this.nv.setSelectionBoxColor(color)
+    },
+    setBackgroundColor: function (color) {
+      this.nv.opts.backColor = color
+      if (color[0] === 0 && color[1]===0 && color[2] === 0){
+        this.nv.canvas.parentElement.style.backgroundColor = "black";
+      }
+      if (color[0] === 1 && color[1]===1 && color[2] === 1){
+        this.nv.canvas.parentElement.style.backgroundColor = "white";
+      }
+      this.nv.drawScene()
+    },
+    setCrosshairWidth: function(width) {
+      this.nv.opts.crosshairWidth = width
+      this.nv.drawScene()
     }
   },
   mounted() {
     // runs when the vue instance is ready and attached to the #app element
     this.nv.attachTo("gl"); // attach the niivue instance to the canvas with id 'gl'
     this.nv.loadVolumes(this.volumeList); // load the volume list and render in the canvas
-    this.nv.set
   },
 };
 </script>

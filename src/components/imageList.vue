@@ -1,6 +1,14 @@
 <template>
 <v-col class="mx-5 my-2">
-  <image-item v-on:visibilityChange="visibilityChange" v-for="(image, index) in images" :key="index" :image=image :index=index>
+  <image-item 
+    v-on:removeImage="removeImage" 
+    v-on:visibilityChange="visibilityChange" 
+    v-on:setColormap="setColormap"
+    v-for="(image, index) in images" 
+    :key="index" 
+    :image=image 
+    :index=index
+    :colormaps="colormaps">
 
   </image-item>
 </v-col>
@@ -14,7 +22,8 @@ export default {
     imageItem
   },
   props: {
-    images: Array
+    images: Array,
+    colormaps:Array
   },
   data () {
     return {
@@ -24,6 +33,12 @@ export default {
   methods: {
     visibilityChange: function(index, visible) {
       this.$emit('visibilityChange', index, visible)
+    },
+    removeImage: function(index) {
+      this.$emit('removeImage', index)
+    },
+    setColormap: function(index, colormap) {
+      this.$emit('setColormap', index, colormap)
     }
   }
   
