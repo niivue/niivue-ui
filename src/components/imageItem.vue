@@ -31,6 +31,15 @@
                 @change="setColormap"
                 dense
                 solo>
+                <template v-slot:item="{item}">
+                    <v-row class="my-1" >
+                      <v-col>
+                        {{item}}
+                      </v-col >
+                      <v-col :style="makeColorGradients(item)">
+                      </v-col>
+                    </v-row>
+                </template>
               </v-select>
             </v-list-item-action>
             
@@ -52,7 +61,8 @@ export default {
   props: {
     image: Object,
     index: Number,
-    colormaps: Array
+    colormaps: Array,
+    nv: Object,
   },
   data() {
     return {
@@ -86,6 +96,22 @@ export default {
     setColormap: function() {
       this.$emit('setColormap', this.index, this.colormap)
       this.itemMenu = false
+    },
+    makeColorGradients(colorName) {
+      console.log('making color: ', colorName)
+      let gradients = ''
+      let c = this.nv.colormapFromKey(colorName)
+      let n = c.R.length
+      console.log(n)
+      gradients += `background: rgba(${c.R[n-1]},${c.G[n-1]},${c.B[n-1]},${1});`
+      gradients += `background: linear-gradient(90deg,`
+      for (let j=0; j< n; j++) {
+        gradients += `rgba(${c.R[j]},${c.G[j]},${c.B[j]},${1}) ${(j/(n-1))*100}%,`
+      }
+      gradients = gradients.slice(0,-1)
+      gradients += ');'
+      console.log(gradients)
+      return gradients
     }
   },
 
@@ -98,5 +124,10 @@ export default {
 </script>
 
 <style scoped>
+
+.gradient {
+  background: rgb(173,70,46);
+  background: linear-gradient(90deg, rgba(173,70,46,1) 0%, rgba(152,87,71,1) 15%, rgba(125,109,103,1) 32%, rgba(108,123,123,1) 41%, rgba(93,135,141,1) 49%, rgba(77,149,161,1) 58%, rgba(57,166,186,1) 69%, rgba(0,212,255,1) 100%);
+}
 
 </style>
