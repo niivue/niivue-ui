@@ -32,7 +32,8 @@
             v-on:visibilityChange="visibilityChange" 
             v-on:setColormap="setColormap"
             :images=volumeList
-            :colormaps="this.nv.colorMaps()">
+            :colormaps="this.nv.colorMaps()"
+            :nv=nv>
             
           </image-list>
           <!-- <v-spacer></v-spacer> -->

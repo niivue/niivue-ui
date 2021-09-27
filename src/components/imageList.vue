@@ -8,7 +8,8 @@
     :key="index" 
     :image=image 
     :index=index
-    :colormaps="colormaps">
+    :colormaps="colormaps"
+    :nv=nv>
 
   </image-item>
 </v-col>
@@ -19,11 +20,12 @@ import imageItem from '@/components/imageItem.vue'
 export default {
   name: 'imageList',
   components: {
-    imageItem
+    imageItem,
   },
   props: {
     images: Array,
-    colormaps:Array
+    colormaps:Array,
+    nv: Object
   },
   data () {
     return {
