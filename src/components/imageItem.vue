@@ -125,9 +125,4 @@ export default {
 
 <style scoped>
 
-.gradient {
-  background: rgb(173,70,46);
-  background: linear-gradient(90deg, rgba(173,70,46,1) 0%, rgba(152,87,71,1) 15%, rgba(125,109,103,1) 32%, rgba(108,123,123,1) 41%, rgba(93,135,141,1) 49%, rgba(77,149,161,1) 58%, rgba(57,166,186,1) 69%, rgba(0,212,255,1) 100%);
-}
-
 </style>
