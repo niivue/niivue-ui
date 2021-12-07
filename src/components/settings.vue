@@ -4,7 +4,7 @@
   <v-dialog 
     overlay-opacity="0" 
     overlay-color="blue" 
-    v-model="show" 
+    v-model="show_" 
     fullscreen 
     hide-overlay 
     persistent
@@ -110,12 +110,13 @@
 
 <script>
 export default {
-  name: 'settings',
+  name: 'niivueSettings',
   props: {
     show: Boolean
   },
   data () {
     return {
+      show_ :this.show,
       crosshairColor: { r: 255, g: 0, b: 0, a: 1 },
       selectionBoxColor: { r: 255, g: 0, b: 0, a: 0.5 },
       crosshairWidth: 1,
@@ -132,7 +133,7 @@ export default {
       ]
     },
     closeDialog: function () {
-      this.show = false
+      this.show_ = false
       this.$emit('close-settings')
     },
     setCrosshairColor: function() {
