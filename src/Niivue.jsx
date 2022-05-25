@@ -18,7 +18,7 @@ import { FormControl } from '@mui/material'
 import { InputLabel } from '@mui/material'
 import { MenuItem } from '@mui/material'
 import { CssBaseline } from '@mui/material'
-import { ExpandLess, ExpandMore, Delete } from '@mui/icons-material'
+import { ExpandLess, ExpandMore, Delete, Replay } from '@mui/icons-material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
 import { Niivue } from '@niivue/niivue'
@@ -92,6 +92,25 @@ function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) 
 		nv.updateGLVolume()
 	}
 
+	function handleMinNumberInput (event) {
+		setMinMax([Number(event.target.value), minMax[1]])
+		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_min = Number(event.target.value); 
+		nv.updateGLVolume()
+	}
+
+	function handleMaxNumberInput (event) {
+		setMinMax([minMax[0], Number(event.target.value)])
+		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_max = Number(event.target.value); 
+		nv.updateGLVolume()
+	}
+
+	function handleIntensityReset(event) {
+		setMinMax([image.global_min, image.global_max])
+		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_min = image.global_min; 
+		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_max = image.global_max; 
+		nv.updateGLVolume()
+	}
+
 	function handleColorChange(event) {
 		let color = event.target.value
 		let id = nv.volumes[nv.getVolumeIndexByID(image.id)].setColorMap(color)
@@ -121,15 +140,48 @@ function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) 
 			<Collapse in={openMore} timeout='auto' unmountOnExit>
 				<List component='div' disablePadding>
 					<ListItem>
+						<Input
+							size='small'
+							style={{marginRight:'4px', marginLeft: '4px'}}
+							value={Number(minMax[0])}
+							inputProps={{
+								step: 1.0,
+								min: image.global_min || 0,
+								max: image.global_max || 999,
+								type: 'number'
+							}}
+							onInput={handleMinNumberInput}
+						>
+						</Input>
 						<Slider 
+							style={{
+								marginLeft: '12px',
+								marginRight: '12px'
+							}}
 							min={image.global_min || 0}
-							max={image.global_max || 100} 
+							max={image.global_max || 999} 
 							size='small'
 							value={minMax} 
 							valueLabelDisplay="auto" 
 							onChange={handleSliderChange}
 						>
 						</Slider>
+						<Input
+							size='small'
+							style={{marginLeft:'4px', marginRight: '4px'}}
+							value={Number(minMax[1])}
+							inputProps={{
+								step: 1.0,
+								min: image.global_min || 0,
+								max: image.global_max || 999,
+								type: 'number'
+							}}
+							onInput={handleMaxNumberInput}
+						>
+						</Input>
+						<IconButton style={{marginRight: '0px', marginLeft:'auto'}} onClick={handleIntensityReset}>
+							<Replay />
+						</IconButton>
 					</ListItem>
 					<ListItem>	
 					<FormControl fullWidth>
