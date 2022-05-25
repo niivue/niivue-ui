@@ -9,7 +9,7 @@ import '@fontsource/roboto/700.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NiiVue />
+    <NiiVue images={[{url: 'mni152.nii'}, {url: 'hippo.nii', colorMap: 'winter'}]}/>
   </React.StrictMode>,
   document.getElementById('root')
 )
