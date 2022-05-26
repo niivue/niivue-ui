@@ -43,13 +43,16 @@ function makeColorGradients(color='red') {
 	return gradients
 }
 
-function NiivueDisplay ({imageList, setImageList}) {
+function NiivueDisplay ({imageList, setImageList, meshList, setMeshList}) {
 	const canvas = useRef(null)
 	useEffect(async () => {
     nv.attachToCanvas(canvas.current)
 		await nv.loadVolumes(imageList)
+		await nv.loadMeshes(meshList)
+		nv.setClipPlane([-0.1, 270, 0])
 		//await nv.loadVolumes([{url: 'mni152.nii'}, {url: 'hippo.nii', colorMap: 'winter'}]) // press the "v" key to cycle through volumes
 		setImageList(nv.volumes)
+		setMeshList(nv.meshes)
 	}, [])
 
 	return (
@@ -85,12 +88,19 @@ function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) 
   };
 
 	function handleSliderChange (event, newValue) {
-		console.log(newValue)
+		setMinMax(newValue); 
+		//nv.volumes[nv.getVolumeIndexByID(image.id)].cal_min = newValue[0]; 
+		//nv.volumes[nv.getVolumeIndexByID(image.id)].cal_max = newValue[1]; 
+		//nv.updateGLVolume()
+	}
+
+	function handleSliderCommitted (event, newValue) {
 		setMinMax(newValue); 
 		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_min = newValue[0]; 
 		nv.volumes[nv.getVolumeIndexByID(image.id)].cal_max = newValue[1]; 
 		nv.updateGLVolume()
 	}
+
 
 	function handleMinNumberInput (event) {
 		setMinMax([Number(event.target.value), minMax[1]])
@@ -164,6 +174,7 @@ function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) 
 							value={minMax} 
 							valueLabelDisplay="auto" 
 							onChange={handleSliderChange}
+							onChangeCommitted={handleSliderCommitted}
 						>
 						</Slider>
 						<Input
@@ -283,8 +294,9 @@ function NiiVueToolbar({}){
 		)
 }
 
-export default function NiiVue({images=[]}) {
+export default function NiiVue({images=[], meshes=[]}) {
 	const [imageList, setImageList] = useState(images)
+	const [meshList, setMeshList] = useState(meshes)
 	const [crosshairValues, setCrosshairValues] = useState([])
 	//const [activeImage, setActiveImage] = useState(0) // the index of the active image (the layer with focus)
 	nv.on('location', (data) => {
@@ -307,8 +319,17 @@ export default function NiiVue({images=[]}) {
 			>	
 				<Grid container spacing={2}>
 					<NiiVueToolbar />
-					<ImageListPanel imageList={imageList} setImageList={setImageList} crosshairValues={crosshairValues}/> 
-					<NiivueDisplay imageList={imageList} setImageList={setImageList}/>	
+					<ImageListPanel
+						imageList={imageList} 
+						setImageList={setImageList} 
+						meshList={meshList}
+						setMeshList={setMeshList}
+						crosshairValues={crosshairValues}/> 
+					<NiivueDisplay 
+						imageList={imageList} 
+						setImageList={setImageList} 
+						meshList={meshList} 
+						setMeshList={setMeshList}/>	
 				</Grid>
 			</Box>
 		</Container>
