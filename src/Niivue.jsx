@@ -21,10 +21,97 @@ import { CssBaseline } from '@mui/material'
 import { ExpandLess, ExpandMore, Delete, Replay } from '@mui/icons-material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
+import {Drawer} from '@mui/material'
 import { Niivue } from '@niivue/niivue'
 import './Niivue.css'
 
 const nv = new Niivue()
+
+/*
+ * spec for loading from json
+ * {
+ * 	crosshairColor: hex value,
+ * 	crosshair
+ * }
+ * MESA_GL_VERSION_OVERRIDE=3.3
+ */
+
+function CrosshairColorPicker(){
+	const [crosshairColor, setCrosshairColor] = useState('#ff0000')
+	function hex2rgb(h) {
+		return [
+			parseInt(h.substring(1,3), 16),
+			parseInt(h.substring(3, 5), 16),
+			parseInt(h.substring(5), 16)
+		]
+	}
+
+	function updateCrosshairColor(hex){
+		let rgb = hex2rgb(hex)
+		let rgba01 = rgb.map(val=>(val/255))
+		rgba01.push(1)
+		setCrosshairColor(hex)
+		nv.setCrosshairColor(rgba01)
+	}
+
+	return (
+	<Grid container m={2}>
+		<Grid item marginRight='auto'>
+			<Typography>
+				Crosshair color
+			</Typography>
+		</Grid>
+		<Grid item>
+			<Input 
+				disableUnderline={true}
+				type='color'
+				style={{width:'50px', height:'20px'}}
+				onInput={(e)=>{updateCrosshairColor(e.target.value);}}
+				value={crosshairColor}
+			/>
+		</Grid>
+	</Grid>
+	)
+}
+
+function SettingsPanel({open, setOpen, width=300}){
+	function closeDrawer(){
+		setOpen(false)		
+	}
+	return (
+		<Drawer
+      open={open}
+			variant="persistent"
+      anchor="left"
+    >
+		<Box sx={{
+			width:width,
+			role: 'presentation',
+			display: 'flex',
+			flexDirection:'column',
+			justifyContent:'flex-start',
+			}}
+		>
+			<Box
+				sx={{
+					display:'flex'
+				}}>
+				<Button onClick={closeDrawer}>
+					close
+				</Button>
+			</Box>
+			<Box
+				sx={{
+					display:'flex'
+				}}>
+				<CrosshairColorPicker />
+			</Box>
+		</Box>
+    </Drawer>
+	)
+}
+
+
 
 // must be implemented after https://github.com/niivue/niivue/issues/321
 function makeColorGradients(color='red') {
@@ -42,6 +129,8 @@ function makeColorGradients(color='red') {
 	gradients += ');'
 	return gradients
 }
+
+
 
 function NiivueDisplay ({imageList, setImageList, meshList, setMeshList}) {
 	const canvas = useRef(null)
@@ -239,22 +328,9 @@ function ImageListPanel({imageList, setImageList, crosshairValues}) {
 }
 
 function NiiVueToolbar({}){
-	const [crosshairColor, setCrosshairColor] = useState('#ff0000')
-	function hex2rgb(h) {
-		return [
-			parseInt(h.substring(1,3), 16),
-			parseInt(h.substring(3, 5), 16),
-			parseInt(h.substring(5), 16)
-		]
-	}
+	const [open, setOpen] = useState(false)
 
-	function updateCrosshairColor(hex){
-		let rgb = hex2rgb(hex)
-		let rgba01 = rgb.map(val=>(val/255))
-		rgba01.push(1)
-		setCrosshairColor(hex)
-		nv.setCrosshairColor(rgba01)
-	}
+	
 	return (	
 			<Grid item container xs={12} spacing={2}>
 				<Grid item xs={12} sm={12} md={4} lg={4}>
@@ -263,6 +339,7 @@ function NiiVueToolbar({}){
 						flexDirection: 'row'
 					}}
 					>
+					<Button onClick={()=>{setOpen(true)}}>drawer</Button>
 					<Button>Add image</Button>
 				</Box>
 				</Grid>
@@ -280,16 +357,11 @@ function NiiVueToolbar({}){
 						3D
 					</Button>
 					
-					<Input 
-						disableUnderline={true}
-						type='color'
-						style={{width:'50px', height:'20px'}}
-						onInput={(e)=>{updateCrosshairColor(e.target.value);}}
-						value={crosshairColor}
-					/>
+					
 
 				</Box>
 				</Grid>
+				<SettingsPanel open={open} setOpen={setOpen} />
 			</Grid>
 		)
 }
