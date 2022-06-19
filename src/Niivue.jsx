@@ -21,13 +21,32 @@ import { CssBaseline } from '@mui/material'
 import { ExpandLess, ExpandMore, Delete, Replay } from '@mui/icons-material'
 import { Visibility } from '@mui/icons-material'
 import { VisibilityOff } from '@mui/icons-material'
-import {Drawer} from '@mui/material'
 import { Niivue } from '@niivue/niivue'
-import './Niivue.css'
 import { SettingsPanel } from './components/SettingsPanel'
+import './Niivue.css'
 
 const nv = new Niivue()
 
+// function to interface with nv colors for 
+// properties in the scene such as:
+// crosshair color, background color, selection color, clip plane color
+function setColor(prop, rgba01){
+	// clip plane color has its own setting method in NiiVue
+	if (prop === 'clipPlaneColor') {
+		nv.setClipPlaneColor(rgba01) // needed because it sets a shader uniform value
+		return
+	}
+	// other common properties with colors can be manipulated directly 
+	// via their property name on the NiiVue.opts object
+	nv.opts[prop] = rgba01
+	nv.drawScene() // refresh the scene so that the changes take effect
+}
+
+// function interface to set the NiiVue crosshair size
+function setCrosshairSize(size){
+	nv.opts.crosshairWidth = size
+	nv.drawScene()
+}
 
 // must be implemented after https://github.com/niivue/niivue/issues/321
 function makeColorGradients(color='red') {
@@ -47,7 +66,7 @@ function makeColorGradients(color='red') {
 }
 
 
-
+// the NiiVue canvas component (where all images are rendered) 
 function NiivueDisplay ({imageList, setImageList, meshList, setMeshList}) {
 	const canvas = useRef(null)
 	useEffect(async () => {
@@ -67,6 +86,9 @@ function NiivueDisplay ({imageList, setImageList, meshList, setMeshList}) {
 	)
 }
 
+// Image list items components that show UI elements related to 
+// NiiVue volumes and meshes.
+// The UI elements in an Image list item can update NVImage properties
 function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) {
 	const [visibilityIcon, setVisibilityIcon] = useState(<Visibility />)
 	const [openMore, setOpenMore] = useState(false);
@@ -229,6 +251,9 @@ function ImageListItem({image, setImageList, crosshairValue=null, precision=4}) 
 
 }
 
+
+// Image list Panel is a component that shows all loaded
+// NVimages and NVmeshes. It contains one ImageListItem per row in the list
 function ImageListPanel({imageList, setImageList, crosshairValues}) {
 	let listItems = []
 	for (let i=imageList.length-1; i>=0; i--) {
@@ -243,10 +268,10 @@ function ImageListPanel({imageList, setImageList, crosshairValues}) {
 	)
 }
 
+// NiiVueToolbar shows UI elements for changes some common NV settings quickly
 function NiiVueToolbar({}){
 	const [open, setOpen] = useState(false)
 
-	
 	return (	
 			<Grid item container xs={12} spacing={2}>
 				<Grid item xs={12} sm={12} md={4} lg={4}>
@@ -255,7 +280,7 @@ function NiiVueToolbar({}){
 						flexDirection: 'row'
 					}}
 					>
-					<Button onClick={()=>{setOpen(true)}}>drawer</Button>
+					<Button onClick={()=>{setOpen(true)}}>Settings</Button>
 					<Button>Add image</Button>
 				</Box>
 				</Grid>
@@ -272,16 +297,15 @@ function NiiVueToolbar({}){
 					<Button onClick={()=>{nv.setSliceType(nv.sliceTypeRender)}}>
 						3D
 					</Button>
-					
-					
-
 				</Box>
 				</Grid>
-				<SettingsPanel nv={nv} open={open} setOpen={setOpen} />
+				<SettingsPanel setCrosshairSize={setCrosshairSize} setColor={setColor} open={open} setOpen={setOpen} />
 			</Grid>
 		)
 }
 
+// The NiiVue component wraps all other components in the UI. 
+// It is exported so that it can be used in other projects easily
 export default function NiiVue({images=[], meshes=[]}) {
 	const [imageList, setImageList] = useState(images)
 	const [meshList, setMeshList] = useState(meshes)

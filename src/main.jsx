@@ -13,10 +13,6 @@ ReactDOM.render(
 			images={[
 				{url: 'mni152.nii'},
 				{url: 'hippo.nii', colorMap: 'winter'},
-				
-			]}
-			meshes={[
-				{url: 'dpsv.trx', rgba255 : [138, 255, 142, 255]}
 			]}
 		/>
   </React.StrictMode>,
