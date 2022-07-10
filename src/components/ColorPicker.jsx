@@ -1,12 +1,32 @@
-import { Grid } from "@mui/material"
 import { Typography } from "@mui/material"
 import { Input } from "@mui/material"
 import { Box } from "@mui/material"
-import { useState } from "react"
+import React from 'react'
 
-export function ColorPicker({setColor, prop, title, initialAlpha=1}){
-  const [colorHex, setColorHex] = useState('#ff0000')
-  const [colorAlpha, setColorAlpha] = useState(initialAlpha)
+export function ColorPicker(props){
+  console.log(props)
+  const [hexColor, setHexColor] = React.useState('#ff0000')
+  React.useEffect(()=>{
+    setHexColor(rgb2Hex(rgb01Torgb255(props.colorRGB01)))
+  }, [])
+
+  function rgb01Torgb255(rgb01){
+    return [
+      Math.round(rgb01[0]) * 255,
+      Math.round(rgb01[1]) * 255,
+      Math.round(rgb01[2]) * 255,
+    ]
+  }
+
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+  function rgb2Hex(rgb255) {
+    return "#" + componentToHex(rgb255[0]) + componentToHex(rgb255[1]) + componentToHex(rgb255[2]);
+  }
+
   function hex2rgb(h) {
     return [
       parseInt(h.substring(1,3), 16),
@@ -15,51 +35,33 @@ export function ColorPicker({setColor, prop, title, initialAlpha=1}){
     ]
   }
 
-  function updateColor(hex, a){
-    a = Number(a)
+  function updateColor(hex){
+    setHexColor(hex)
     let rgb = hex2rgb(hex)
-    let rgba01 = rgb.map(val=>(val/255))
-    rgba01.push(a)
-    setColorHex(hex)
-    setColorAlpha(a)
-    setColor(prop, rgba01)
+    let rgb01 = rgb.map(val=>(val/255))
+    props.setColor(rgb01)
   }
 
   return (
     <Box
       sx={{
-        display:'flex'
-      }}>
-      <Grid container m={2}>
-        <Grid item marginRight='auto'>
-          <Typography>
-            {title}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Input 
-            disableUnderline={true}
-            type='color'
-            style={{width:'50px', height:'20px'}}
-            onInput={(e)=>{updateColor(e.target.value, colorAlpha);}}
-            value={colorHex}
-          />
-        </Grid>
-        <Grid item>
-          <Input
-            size='small'
-            style={{marginLeft:4}}
-            value={colorAlpha}
-            inputProps={{
-              step: 0.1,
-              min: 0,
-              max: 1,
-              type: 'number'
-            }}
-            onInput={(e)=>{updateColor(colorHex, e.target.value);}}
-          />
-        </Grid>
-      </Grid>
+        display:'flex',
+      }}
+      m={1}
+    >
+        <Typography 
+          style={{
+           marginRight: 'auto'
+          }}>
+          {props.title}
+        </Typography>
+        <Input 
+          disableUnderline={true}
+          type='color'
+          style={{width:'50px', height:'20px'}}
+          onInput={(e)=>{updateColor(e.target.value);}}
+          value={hexColor}
+        />
     </Box>
   )
 }
