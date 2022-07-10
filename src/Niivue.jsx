@@ -7,7 +7,7 @@ import { Niivue, NVImage} from '@niivue/niivue'
 import Toolbar from './components/Toolbar.jsx'
 import {SettingsPanel} from './components/SettingsPanel.jsx'
 import {ColorPicker} from './components/ColorPicker.jsx'
-import {CrosshairSize} from './components/CrosshairSize.jsx'
+import {NumberPicker} from './components/NumberPicker.jsx'
 import { LayersPanel } from './components/LayersPanel.jsx'
 import { NiivuePanel } from './components/NiivuePanel.jsx'
 import Layer from './components/Layer.jsx'
@@ -18,11 +18,13 @@ const nv = new Niivue()
 // The NiiVue component wraps all other components in the UI. 
 // It is exported so that it can be used in other projects easily
 export default function NiiVue(props) {
-  const [openSettings, setOpenSettings] = React.useState(false)
-  const [openLayers, setOpenLayers] = React.useState(true)
+  const [openSettings, setOpenSettings] = React.useState(true)
+  const [openLayers, setOpenLayers] = React.useState(false)
   const [crosshairColor, setCrosshairColor] = React.useState([1, 0, 0, 1])
   const [selectionBoxColor, setSelectionBoxColor] = React.useState([1, 1, 1, 0.5])
   const [layers, setLayers] = React.useState(nv.volumes)
+  // TODO: add crosshair size state and setter
+  const [crosshairOpacity, setCrosshairOpacity] = React.useState(1.0)
   // only run this when the component is mounted on the page
   // or else it will be recursive and continuously add all
   // initial images supplied to the NiiVue component
@@ -73,12 +75,22 @@ export default function NiiVue(props) {
     setOpenLayers(!openLayers)
   }
 
-  function updateCrosshairColor(rgb01){
-    setCrosshairColor([...rgb01, 1])
-    nv.setCrosshairColor([...rgb01, 1])
+  function nvUpdateCrosshairColor(rgb01, a=1){
+    setCrosshairColor([...rgb01, a])
+    nv.setCrosshairColor([...rgb01, a])
   }
 
-  function nvUpdateCrosshair(w){
+  function nvUpdateCrosshairOpacity(a){
+    nv.setCrosshairColor([
+      crosshairColor[0],
+      crosshairColor[1],
+      crosshairColor[2],
+      a
+    ])
+    setCrosshairOpacity(a)
+  }
+
+  function nvUpdateCrosshairSize(w){
     nv.opts.crosshairWidth = w
     nv.drawScene()
   }
@@ -135,21 +147,35 @@ export default function NiiVue(props) {
       >
         <ColorPicker
           colorRGB01={crosshairColor}
-          setColor={updateCrosshairColor}
+          onSetColor={nvUpdateCrosshairColor}
           title={'Crosshair color'}
         >
         </ColorPicker>
+        <NumberPicker
+          value={crosshairOpacity}
+          onChange={nvUpdateCrosshairOpacity}
+          title={'Crosshair opacity'}
+          min={0}
+          max={1}
+          step={0.1}
+        >
+        </NumberPicker>
         <ColorPicker
           colorRGB01={selectionBoxColor}
-          setColor={nvUpdateSelectionBoxColor}
+          onSetColor={nvUpdateSelectionBoxColor}
           title={'Selection box color'}
         >
         </ColorPicker>
-        <CrosshairSize
-          size={nv.opts.crosshairWidth}
-          onCrosshairSizeChange={nvUpdateCrosshair}
+        <NumberPicker
+          value={nv.opts.crosshairWidth}
+          onChange={nvUpdateCrosshairSize}
+          title={'Crosshair size'}
+          min={0}
+          max={10}
+          step={1}
         >
-        </CrosshairSize>
+        </NumberPicker>
+
       </SettingsPanel>
       <LayersPanel
         open={openLayers}

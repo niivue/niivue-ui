@@ -4,17 +4,22 @@ import { Box } from "@mui/material"
 import React from 'react'
 
 export function ColorPicker(props){
-  console.log(props)
   const [hexColor, setHexColor] = React.useState('#ff0000')
   React.useEffect(()=>{
-    setHexColor(rgb2Hex(rgb01Torgb255(props.colorRGB01)))
+    let rgb255 = rgb01Torgb255(props.colorRGB01)
+    let hex = rgb2Hex(rgb255)
+    console.log(props.title)
+    console.log(rgb255)
+    console.log(hex)
+    console.log('end use effect')
+    setHexColor(hex)
   }, [])
 
   function rgb01Torgb255(rgb01){
     return [
-      Math.round(rgb01[0]) * 255,
-      Math.round(rgb01[1]) * 255,
-      Math.round(rgb01[2]) * 255,
+      Math.round(rgb01[0] * 255),
+      Math.round(rgb01[1] * 255),
+      Math.round(rgb01[2] * 255),
     ]
   }
 
@@ -35,11 +40,13 @@ export function ColorPicker(props){
     ]
   }
 
-  function updateColor(hex){
+  function updateColor(event){
+    let hex = event.target.value
+    console.log(hex)
     setHexColor(hex)
     let rgb = hex2rgb(hex)
     let rgb01 = rgb.map(val=>(val/255))
-    props.setColor(rgb01)
+    props.onSetColor(rgb01)
   }
 
   return (
@@ -56,10 +63,14 @@ export function ColorPicker(props){
           {props.title}
         </Typography>
         <Input 
-          disableUnderline={true}
+          disableUnderline={false}
+          autoFocus={false}
           type='color'
-          style={{width:'50px', height:'20px'}}
-          onInput={(e)=>{updateColor(e.target.value);}}
+          style={{
+            width:'50px',
+            height:'20px',
+          }}
+          onInput={updateColor}
           value={hexColor}
         />
     </Box>
