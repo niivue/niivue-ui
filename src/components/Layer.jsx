@@ -54,8 +54,8 @@ export default function Layer(props){
           sx={{
             margin: 1,
             display: 'flex',
-            flexDirection: 'row'
-            
+            flexDirection: 'row',
+            alignItems: 'center'
           }}
         >
           <Typography>

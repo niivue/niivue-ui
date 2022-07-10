@@ -1,8 +1,6 @@
 import React from 'react'
 import { Button, Typography } from '@mui/material'
 import { Box } from '@mui/material'
-import { Divider } from '@mui/material'
-import { CssBaseline } from '@mui/material'
 import { Niivue, NVImage} from '@niivue/niivue'
 import Toolbar from './components/Toolbar.jsx'
 import {SettingsPanel} from './components/SettingsPanel.jsx'
@@ -10,10 +8,13 @@ import {ColorPicker} from './components/ColorPicker.jsx'
 import {NumberPicker} from './components/NumberPicker.jsx'
 import { LayersPanel } from './components/LayersPanel.jsx'
 import { NiivuePanel } from './components/NiivuePanel.jsx'
+import NVSwitch from './components/Switch.jsx'
 import Layer from './components/Layer.jsx'
 import './Niivue.css'
 
-const nv = new Niivue()
+const nv = new Niivue({
+  loadingText: 'loading...'
+})
 
 // The NiiVue component wraps all other components in the UI. 
 // It is exported so that it can be used in other projects easily
@@ -23,6 +24,10 @@ export default function NiiVue(props) {
   const [crosshairColor, setCrosshairColor] = React.useState([1, 0, 0, 1])
   const [selectionBoxColor, setSelectionBoxColor] = React.useState([1, 1, 1, 0.5])
   const [layers, setLayers] = React.useState(nv.volumes)
+  const [cornerText, setCornerText] = React.useState(false)
+  const [radiological, setRadiological] = React.useState(false)
+  const [crosshair3D, setCrosshair3D] = React.useState(false)
+
   // TODO: add crosshair size state and setter
   const [crosshairOpacity, setCrosshairOpacity] = React.useState(1.0)
   // only run this when the component is mounted on the page
@@ -33,7 +38,6 @@ export default function NiiVue(props) {
   // button or drag and drop
   React.useEffect(()=>{
     props.volumes.map(async (vol)=>{
-      console.log(vol.url)
       let image = await NVImage.loadFromUrl({url:vol.url})
       nv.addVolume(image)
       setLayers([...nv.volumes])
@@ -78,6 +82,22 @@ export default function NiiVue(props) {
   function nvUpdateCrosshairColor(rgb01, a=1){
     setCrosshairColor([...rgb01, a])
     nv.setCrosshairColor([...rgb01, a])
+  }
+
+  function nvUpdateCornerText(){
+    nv.setCornerOrientationText(!cornerText)
+    setCornerText(!cornerText)
+  }
+
+  function nvUpdateCrosshair3D(){
+    nv.opts.show3Dcrosshair = !crosshair3D
+    nv.updateGLVolume()
+    setCrosshair3D(!crosshair3D)
+  }
+
+  function nvUpdateRadiological(){
+    nv.setRadiologicalConvention(!radiological)
+    setRadiological(!radiological)
   }
 
   function nvUpdateCrosshairOpacity(a){
@@ -175,7 +195,24 @@ export default function NiiVue(props) {
           step={1}
         >
         </NumberPicker>
-
+        <NVSwitch
+          checked={cornerText}
+          title={'Corner text'}
+          onChange={nvUpdateCornerText}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={radiological}
+          title={'radiological'}
+          onChange={nvUpdateRadiological}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={crosshair3D}
+          title={'3D crosshair'}
+          onChange={nvUpdateCrosshair3D}
+        >
+        </NVSwitch>
       </SettingsPanel>
       <LayersPanel
         open={openLayers}
