@@ -27,6 +27,7 @@ export default function NiiVue(props) {
   const [cornerText, setCornerText] = React.useState(false)
   const [radiological, setRadiological] = React.useState(false)
   const [crosshair3D, setCrosshair3D] = React.useState(false)
+  const [textSize, setTextSize] = React.useState(nv.opts.textHeight)
 
   // TODO: add crosshair size state and setter
   const [crosshairOpacity, setCrosshairOpacity] = React.useState(1.0)
@@ -82,6 +83,12 @@ export default function NiiVue(props) {
   function nvUpdateCrosshairColor(rgb01, a=1){
     setCrosshairColor([...rgb01, a])
     nv.setCrosshairColor([...rgb01, a])
+  }
+
+  function nvUpdateTextSize(v) {
+    setTextSize(v)
+    nv.opts.textHeight = v
+    nv.drawScene()
   }
 
   function nvUpdateCornerText(){
@@ -195,6 +202,15 @@ export default function NiiVue(props) {
           step={1}
         >
         </NumberPicker>
+        <NumberPicker
+          value={textSize}
+          onChange={nvUpdateTextSize}
+          title={'Text size'}
+          min={0}
+          max={0.2}
+          step={0.01}
+        >
+        </NumberPicker>
         <NVSwitch
           checked={cornerText}
           title={'Corner text'}
@@ -216,7 +232,7 @@ export default function NiiVue(props) {
       </SettingsPanel>
       <LayersPanel
         open={openLayers}
-        width={300}
+        width={320}
         onToggleMenu={toggleLayers}
         onAddLayer={addLayer}
       >

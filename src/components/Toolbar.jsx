@@ -6,6 +6,7 @@ import {Select} from "@mui/material"
 import {MenuItem} from "@mui/material"
 import {InputLabel} from "@mui/material"
 import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu'
 import LayersIcon from '@mui/icons-material/Layers'
 
 export default function Toolbar(props){
@@ -27,20 +28,20 @@ export default function Toolbar(props){
         flexDirection: 'row',
         justifyItems: 'left',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
       }}
     >
       
       <IconButton 
         onClick={props.toggleLayers}
       >
-        <LayersIcon />
+        <MenuIcon />
       </IconButton>
   
       <FormControl 
         size='small'
         sx={{
-          m:1,
+          m:2,
           minWidth: 120
         }}>
         <InputLabel id="slice-type-label">Display mode</InputLabel>

@@ -4,6 +4,8 @@ import { Typography } from "@mui/material"
 import { IconButton } from "@mui/material"
 import { Button } from "@mui/material"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import GestureIcon from "@mui/icons-material/Gesture"
+import LayersIcon from "@mui/icons-material/Layers"
 import AddIcon from '@mui/icons-material/Add'
 
 export function LayersPanel(props){
@@ -25,40 +27,80 @@ export function LayersPanel(props){
         width: props.width,
       }}
     >
-		<Box sx={{
-			width:props.width,
-			role: 'presentation',
-			display: 'flex',
-			flexDirection:'column',
-			justifyContent:'flex-start',
-			}}
-		>
-			<Box
-				sx={{
-					display:'flex'
-				}}>
-        <IconButton 
-          onClick={props.onToggleMenu}
-          style={{marginLeft:'auto'}}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-			</Box>
       <Box
         sx={{
-          display:'flex',
-        }}   
+          width: props.width,
+          display: 'flex',
+          flexDirection: 'row',
+          height: '100vh'
+        }}
       >
-        <Button
-          onClick={handleAddLayer}
-          endIcon={<AddIcon />}
-          size='small'
+        <Box
+          sx={{
+            width: 48,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#F8F8F8',
+            height: '100vh',
+            alignItems: 'center'
+          }}
         >
-          Add Layer
-        </Button>
+          <IconButton
+            style={{
+              marginTop: '36px'
+            }}
+          >
+            <LayersIcon />
+          </IconButton>
+          <IconButton
+            style={{
+              marginTop: '8px'
+            }}
+          >
+            <GestureIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{
+          width:props.width,
+          role: 'presentation',
+          display: 'flex',
+          height: '100vh',
+          flexDirection:'column',
+          justifyContent:'flex-start',
+          ml: 1,
+          mr: 1
+          }}
+        >
+          <Box
+            sx={{
+              display:'flex'
+            }}>
+            <IconButton 
+              onClick={props.onToggleMenu}
+              style={{marginLeft:'auto'}}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              display:'flex',
+            }}   
+          >
+            <Button
+              onClick={handleAddLayer}
+              endIcon={<AddIcon />}
+              size='small'
+            >
+              Add Layer
+            </Button>
+          </Box>
+          {props.children}
+        </Box>
+
       </Box>
-      {props.children}
-		</Box>
+
+      
     </Drawer>
 	)
 }
