@@ -23,7 +23,7 @@ const nv = new Niivue({
 // The NiiVue component wraps all other components in the UI. 
 // It is exported so that it can be used in other projects easily
 export default function NiiVue(props) {
-  const [openSettings, setOpenSettings] = React.useState(true)
+  const [openSettings, setOpenSettings] = React.useState(false)
   const [openLayers, setOpenLayers] = React.useState(false)
   const [crosshairColor, setCrosshairColor] = React.useState(nv.opts.crosshairColor)
   const [selectionBoxColor, setSelectionBoxColor] = React.useState(nv.opts.selectionBoxColor)
@@ -40,7 +40,7 @@ export default function NiiVue(props) {
   // TODO: add crosshair size state and setter
   const [crosshairOpacity, setCrosshairOpacity] = React.useState(nv.opts.crosshairColor[3])
   const [clipPlaneOpacity, setClipPlaneOpacity] = React.useState(nv.opts.clipPlaneColor[3])
-  const [locationTableVisible, setLocationTableVisible] = React.useState(true)
+  const [locationTableVisible, setLocationTableVisible] = React.useState(false)
   const [locationData, setLocationData] = React.useState([])
   const [decimalPrecision, setDecimalPrecision] = React.useState(2)
 
