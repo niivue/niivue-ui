@@ -18,6 +18,7 @@ export default function NVSwitch(props){
       m={1}
     >
         <Typography
+          onClick={handleChange}
           style={{
             marginRight: 'auto'
           }}

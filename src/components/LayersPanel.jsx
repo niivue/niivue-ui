@@ -32,7 +32,7 @@ export function LayersPanel(props){
           width: props.width,
           display: 'flex',
           flexDirection: 'row',
-          height: '100vh'
+          height: '100%'
         }}
       >
         <Box
@@ -41,7 +41,7 @@ export function LayersPanel(props){
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: '#F8F8F8',
-            height: '100vh',
+            height: '100%',
             alignItems: 'center'
           }}
         >
@@ -50,7 +50,7 @@ export function LayersPanel(props){
               marginTop: '36px'
             }}
           >
-            <LayersIcon />
+            <LayersIcon color='primary' />
           </IconButton>
           <IconButton
             style={{
@@ -64,7 +64,7 @@ export function LayersPanel(props){
           width:props.width,
           role: 'presentation',
           display: 'flex',
-          height: '100vh',
+          height: '100%',
           flexDirection:'column',
           justifyContent:'flex-start',
           ml: 1,

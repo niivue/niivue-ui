@@ -1,6 +1,9 @@
 import React from 'react'
 import { Button, Typography } from '@mui/material'
 import { Box } from '@mui/material'
+import { Fade} from '@mui/material'
+import { Popper } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Niivue, NVImage} from '@niivue/niivue'
 import Toolbar from './components/Toolbar.jsx'
 import {SettingsPanel} from './components/SettingsPanel.jsx'
@@ -9,6 +12,7 @@ import {NumberPicker} from './components/NumberPicker.jsx'
 import { LayersPanel } from './components/LayersPanel.jsx'
 import { NiivuePanel } from './components/NiivuePanel.jsx'
 import NVSwitch from './components/Switch.jsx'
+import LocationTable from './components/LocationTable.jsx'
 import Layer from './components/Layer.jsx'
 import './Niivue.css'
 
@@ -21,16 +25,25 @@ const nv = new Niivue({
 export default function NiiVue(props) {
   const [openSettings, setOpenSettings] = React.useState(true)
   const [openLayers, setOpenLayers] = React.useState(false)
-  const [crosshairColor, setCrosshairColor] = React.useState([1, 0, 0, 1])
-  const [selectionBoxColor, setSelectionBoxColor] = React.useState([1, 1, 1, 0.5])
+  const [crosshairColor, setCrosshairColor] = React.useState(nv.opts.crosshairColor)
+  const [selectionBoxColor, setSelectionBoxColor] = React.useState(nv.opts.selectionBoxColor)
+  const [backColor, setBackColor] = React.useState(nv.opts.backColor)
+  const [clipPlaneColor, setClipPlaneColor] = React.useState(nv.opts.clipPlaneColor)
   const [layers, setLayers] = React.useState(nv.volumes)
   const [cornerText, setCornerText] = React.useState(false)
   const [radiological, setRadiological] = React.useState(false)
   const [crosshair3D, setCrosshair3D] = React.useState(false)
   const [textSize, setTextSize] = React.useState(nv.opts.textHeight)
-
+  const [colorBar, setColorBar] = React.useState(nv.opts.isColorbar)
+  const [worldSpace, setWorldSpace] = React.useState(nv.opts.isSliceMM)
+  const [clipPlane, setClipPlane] = React.useState(nv.currentClipPlaneIndex > 0 ? true : false)
   // TODO: add crosshair size state and setter
-  const [crosshairOpacity, setCrosshairOpacity] = React.useState(1.0)
+  const [crosshairOpacity, setCrosshairOpacity] = React.useState(nv.opts.crosshairColor[3])
+  const [clipPlaneOpacity, setClipPlaneOpacity] = React.useState(nv.opts.clipPlaneColor[3])
+  const [locationTableVisible, setLocationTableVisible] = React.useState(true)
+  const [locationData, setLocationData] = React.useState([])
+  const [decimalPrecision, setDecimalPrecision] = React.useState(2)
+
   // only run this when the component is mounted on the page
   // or else it will be recursive and continuously add all
   // initial images supplied to the NiiVue component
@@ -45,13 +58,13 @@ export default function NiiVue(props) {
     })
   }, [])
 
-  // imageLoaded event is triggered
-  // on drag and drop, so we can update the
-  // UI by listening to this.
-  nv.on('imageLoaded', ()=>{
+  nv.opts.onImageLoaded = ()=>{
     setLayers([...nv.volumes])
-  })
-  
+  }
+
+  nv.opts.onLocationChange = (data)=>{
+    setLocationData(data.values)
+  }
   // construct an array of <Layer> components. Each layer is a NVImage or NVMesh 
   const layerList = layers.map((layer) => {
     return (
@@ -80,15 +93,59 @@ export default function NiiVue(props) {
     setOpenLayers(!openLayers)
   }
 
+  function toggleLocationTable(){
+    setLocationTableVisible(!locationTableVisible)
+  }
+
   function nvUpdateCrosshairColor(rgb01, a=1){
     setCrosshairColor([...rgb01, a])
     nv.setCrosshairColor([...rgb01, a])
+  }
+
+  function nvUpdateBackColor(rgb01, a=1){
+    setBackColor([...rgb01, a])
+    nv.opts.backColor = [...rgb01, a]
+    nv.drawScene()
+  }
+
+  function nvUpdateClipPlaneColor(rgb01, a=1){
+    setClipPlaneColor([...rgb01, a])
+    nv.opts.clipPlaneColor = [...rgb01, a]
+    setClipPlane(true)
+    nv.setClipPlane([0, 270, 0]) //left
+    nv.updateGLVolume()
+  }
+
+  function nvUpdateClipPlane(){
+    if (!clipPlane){
+      setClipPlane(true)
+      nv.setClipPlane([0, 270, 0]) //left
+    } else {
+      setClipPlane(false)
+      nv.setClipPlane([2, 0, 0]) //none
+    }
+  }
+
+  function nvUpdateColorBar(){
+    setColorBar(!colorBar)
+    nv.opts.isColorbar = !colorBar
+    nv.drawScene()
   }
 
   function nvUpdateTextSize(v) {
     setTextSize(v)
     nv.opts.textHeight = v
     nv.drawScene()
+  }
+
+  function updateDecimalPrecision(v){
+    setDecimalPrecision(v)
+  }
+
+  function nvUpdateWorldSpace(){
+    nvUpdateCrosshair3D(!worldSpace)
+    setWorldSpace(!worldSpace)
+    nv.setSliceMM(!worldSpace)
   }
 
   function nvUpdateCornerText(){
@@ -115,6 +172,17 @@ export default function NiiVue(props) {
       a
     ])
     setCrosshairOpacity(a)
+  }
+
+  function nvUpdateClipPlaneOpacity(a){
+    nv.opts.clipPlaneColor = [
+      clipPlaneColor[0],
+      clipPlaneColor[1],
+      clipPlaneColor[2],
+      a
+    ]
+    setClipPlaneOpacity(a)
+    nv.updateGLVolume()
   }
 
   function nvUpdateCrosshairSize(w){
@@ -151,10 +219,6 @@ export default function NiiVue(props) {
     setLayers([...nv.volumes])
   }
 
-	nv.on('location', (data) => {
-		//setCrosshairValues(data.values)
-	})
-
 	nv.on('intensityRange', (nvimage) => {
 		//setIntensityRange(nvimage)
 	})
@@ -172,6 +236,27 @@ export default function NiiVue(props) {
         width={300}
         toggleMenu={toggleSettings}
       >
+        <ColorPicker
+          colorRGB01={backColor}
+          onSetColor={nvUpdateBackColor}
+          title={'Background color'}
+        >
+        </ColorPicker>
+        <ColorPicker
+          colorRGB01={clipPlaneColor}
+          onSetColor={nvUpdateClipPlaneColor}
+          title={'Clip plane color'}
+        >
+        </ColorPicker>
+        <NumberPicker
+          value={clipPlaneOpacity}
+          onChange={nvUpdateClipPlaneOpacity}
+          title={'Clip plane opacity'}
+          min={0}
+          max={1}
+          step={0.1}
+        >
+        </NumberPicker>
         <ColorPicker
           colorRGB01={crosshairColor}
           onSetColor={nvUpdateCrosshairColor}
@@ -212,6 +297,18 @@ export default function NiiVue(props) {
         >
         </NumberPicker>
         <NVSwitch
+          checked={locationTableVisible}
+          title={'Location table'}
+          onChange={toggleLocationTable}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={clipPlane}
+          title={'Clip plane'}
+          onChange={nvUpdateClipPlane}
+        >
+        </NVSwitch>
+        <NVSwitch
           checked={cornerText}
           title={'Corner text'}
           onChange={nvUpdateCornerText}
@@ -229,6 +326,27 @@ export default function NiiVue(props) {
           onChange={nvUpdateCrosshair3D}
         >
         </NVSwitch>
+        <NVSwitch
+          checked={colorBar}
+          title={'Show color bar'}
+          onChange={nvUpdateColorBar}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={worldSpace}
+          title={'World space'}
+          onChange={nvUpdateWorldSpace}
+        >
+        </NVSwitch>
+        <NumberPicker
+          value={decimalPrecision}
+          onChange={updateDecimalPrecision}
+          title={'Decimal precision'}
+          min={0}
+          max={8}
+          step={1}
+        >
+        </NumberPicker>
       </SettingsPanel>
       <LayersPanel
         open={openLayers}
@@ -249,6 +367,11 @@ export default function NiiVue(props) {
         volumes={layers}
       >
       </NiivuePanel>
+      <LocationTable 
+        tableData={locationData} 
+        isVisible={locationTableVisible}
+        decimalPrecision={decimalPrecision}
+      />
     </Box>
   )
 }
