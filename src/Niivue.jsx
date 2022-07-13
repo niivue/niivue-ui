@@ -43,6 +43,18 @@ export default function NiiVue(props) {
   const [locationTableVisible, setLocationTableVisible] = React.useState(false)
   const [locationData, setLocationData] = React.useState([])
   const [decimalPrecision, setDecimalPrecision] = React.useState(2)
+  const [orientCube, setOrientCube] = React.useState(nv.opts.isOrientCube)
+  const [ruler, setRuler] = React.useState(nv.opts.isRuler)
+  const [multiplanarPadPixels, setMultiplanarPadPixels] = React.useState(nv.opts.multiplanarPadPixels)
+  const [maxDrawUndoBitmaps, setMaxDrawUndoBitmaps] = React.useState(nv.opts.maxDrawUndoBitmaps)
+  const [sagittalNoseLeft, setSagittalNoseLeft] = React.useState(nv.opts.sagittalNoseLeft)
+  const [rulerWidth, setRulerWidth] = React.useState(nv.opts.rulerWidth)
+  const [longTouchTimeout, setLongTouchTimeout] = React.useState(nv.opts.longTouchTimeout)
+  const [doubleTouchTimeout, setDoubleTouchTimeout] = React.useState(nv.opts.doubleTouchTimeout)
+  const [dragToMeasure, setDragToMeasure] = React.useState(nv.opts.isDragShowsMeasurementTool)
+  const [rulerColor, setRulerColor] = React.useState(nv.opts.rulerColor)
+  const [rulerOpacity, setRulerOpacity] = React.useState(nv.opts.rulerColor[3])
+  const [highDPI, setHighDPI] = React.useState(false)
 
   // only run this when the component is mounted on the page
   // or else it will be recursive and continuously add all
@@ -102,9 +114,85 @@ export default function NiiVue(props) {
     nv.setCrosshairColor([...rgb01, a])
   }
 
+  function nvUpdateOrientCube(){
+    nv.opts.isOrientCube = !orientCube
+    setOrientCube(!orientCube)
+    nv.drawScene()
+  }
+
+  function nvUpdateHighDPI(){
+    nv.setHighResolutionCapable(!highDPI)
+    setHighDPI(!highDPI)
+  }
+
+  function nvUpdateMultiplanarPadPixels(v){
+    nv.opts.multiplanarPadPixels = v
+    setMultiplanarPadPixels(v)
+    nv.drawScene()
+  }
+
+  function nvUpdateRuler(){
+    nv.opts.isRuler = !ruler
+    setRuler(!ruler)
+    nv.drawScene()
+  }
+
+  function nvUpdateSagittalNoseLeft(){
+    nv.opts.sagittalNoseLeft = !sagittalNoseLeft
+    setSagittalNoseLeft(!sagittalNoseLeft)
+    nv.drawScene()
+  }
+
+  function nvUpdateRulerWidth(v){
+    nv.opts.rulerWidth = v
+    setRulerWidth(v)
+    nv.drawScene()
+  }
+
+  function nvUpdateRulerOpacity(a){
+    nv.opts.rulerColor = [
+      rulerColor[0],
+      rulerColor[1],
+      rulerColor[2],
+      a
+    ]
+    setRulerOpacity(a)
+    nv.drawScene()
+  }
+
+  function nvUpdateLongTouchTimeout(v){
+    nv.opts.longTouchTimeout = v
+    setLongTouchTimeout(v)
+  }
+
+  function nvUpdateDoubleTouchTimeout(v){
+    nv.opts.doubleTouchTimeout = v
+    setDoubleTouchTimeout(v)
+  }
+
+  function nvUpdateDragToMeasure(){
+    nv.opts.isDragShowsMeasurementTool = !dragToMeasure
+    setDragToMeasure(!dragToMeasure)
+  }
+
+  function nvUpdateMaxDrawUndoBitmaps(v){
+    nv.opts.maxDrawUndoBitmaps = v
+    setMaxDrawUndoBitmaps(v)
+  }
+
   function nvUpdateBackColor(rgb01, a=1){
     setBackColor([...rgb01, a])
     nv.opts.backColor = [...rgb01, a]
+    nv.drawScene()
+  }
+
+  function nvUpdateRulerColor(rgb01, a=1){
+    setRulerColor([...rgb01, a])
+    nv.opts.rulerColor = [...rgb01, a]
+    if (!ruler){
+      nv.opts.isRuler = !ruler
+      setRuler(!ruler)
+    }
     nv.drawScene()
   }
 
@@ -296,10 +384,46 @@ export default function NiiVue(props) {
           step={0.01}
         >
         </NumberPicker>
+        <ColorPicker
+          colorRGB01={rulerColor}
+          onSetColor={nvUpdateRulerColor}
+          title={'Ruler color'}
+        >
+        </ColorPicker>
+        <NumberPicker
+          value={rulerWidth}
+          onChange={nvUpdateRulerWidth}
+          title={'Ruler thickness'}
+          min={0}
+          max={10}
+          step={1}
+        >
+        </NumberPicker>
+        <NumberPicker
+          value={rulerOpacity}
+          onChange={nvUpdateRulerOpacity}
+          title={'Ruler opacity'}
+          min={0}
+          max={1}
+          step={0.1}
+        >
+        </NumberPicker>
         <NVSwitch
           checked={locationTableVisible}
           title={'Location table'}
           onChange={toggleLocationTable}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={orientCube}
+          title={'Orientation cube'}
+          onChange={nvUpdateOrientCube}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={ruler}
+          title={'Ruler'}
+          onChange={nvUpdateRuler}
         >
         </NVSwitch>
         <NVSwitch
@@ -338,6 +462,24 @@ export default function NiiVue(props) {
           onChange={nvUpdateWorldSpace}
         >
         </NVSwitch>
+        <NVSwitch
+          checked={sagittalNoseLeft}
+          title={'Nose left'}
+          onChange={nvUpdateSagittalNoseLeft}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={dragToMeasure}
+          title={'Drag to measure'}
+          onChange={nvUpdateDragToMeasure}
+        >
+        </NVSwitch>
+        <NVSwitch
+          checked={highDPI}
+          title={'High DPI'}
+          onChange={nvUpdateHighDPI}
+        >
+        </NVSwitch>
         <NumberPicker
           value={decimalPrecision}
           onChange={updateDecimalPrecision}
@@ -345,6 +487,42 @@ export default function NiiVue(props) {
           min={0}
           max={8}
           step={1}
+        >
+        </NumberPicker>
+        <NumberPicker
+          value={multiplanarPadPixels}
+          onChange={nvUpdateMultiplanarPadPixels}
+          title={'Multiplanar padding'}
+          min={0}
+          max={20}
+          step={2}
+        >
+        </NumberPicker>
+        <NumberPicker
+          value={maxDrawUndoBitmaps}
+          onChange={nvUpdateMaxDrawUndoBitmaps}
+          title={'Max Draw Undos'}
+          min={8}
+          max={28}
+          step={1}
+        >
+        </NumberPicker>
+        <NumberPicker
+          value={longTouchTimeout}
+          onChange={nvUpdateLongTouchTimeout}
+          title={'Long touch timeout msec'}
+          min={1000}
+          max={5000}
+          step={100}
+        >
+        </NumberPicker>
+        <NumberPicker
+          value={doubleTouchTimeout}
+          onChange={nvUpdateDoubleTouchTimeout}
+          title={'Double touch timeout msec'}
+          min={500}
+          max={999}
+          step={25}
         >
         </NumberPicker>
       </SettingsPanel>
