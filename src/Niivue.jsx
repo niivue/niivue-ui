@@ -40,7 +40,7 @@ export default function NiiVue(props) {
   // TODO: add crosshair size state and setter
   const [crosshairOpacity, setCrosshairOpacity] = React.useState(nv.opts.crosshairColor[3])
   const [clipPlaneOpacity, setClipPlaneOpacity] = React.useState(nv.opts.clipPlaneColor[3])
-  const [locationTableVisible, setLocationTableVisible] = React.useState(false)
+  const [locationTableVisible, setLocationTableVisible] = React.useState(true)
   const [locationData, setLocationData] = React.useState([])
   const [decimalPrecision, setDecimalPrecision] = React.useState(2)
   const [orientCube, setOrientCube] = React.useState(nv.opts.isOrientCube)
@@ -85,6 +85,8 @@ export default function NiiVue(props) {
         image={layer}
         onColorMapChange={nvUpdateColorMap}
         onRemoveLayer={nvRemoveLayer}
+        colorMapValues={nv.colormapFromKey(layer.colorMap)}
+        getColorMapValues={(colorMapName)=>{return nv.colormapFromKey(colorMapName)}}
       />
     )
   })
@@ -298,8 +300,7 @@ export default function NiiVue(props) {
   }
 
   function nvUpdateColorMap(id, clr){
-    nv.volumes[nv.getVolumeIndexByID(id)].setColorMap(clr)
-    nv.updateGLVolume()
+    nv.setColorMap(id, clr)
   }
 
   function nvRemoveLayer(imageToRemove){
@@ -315,8 +316,9 @@ export default function NiiVue(props) {
     <Box sx={{
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
-      backgroundColor: 'black'
+      height: '100%',
+      width: '100%',
+      backgroundColor: 'black',
       }}
     >	
       <SettingsPanel 

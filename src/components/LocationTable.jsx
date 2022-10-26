@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box'
 
 export default function LocationTable(props) {
   let display = 'none'
@@ -15,12 +16,18 @@ export default function LocationTable(props) {
     display = 'none'
   }
   return (
+    <Box
+      sx={{
+        display: display === 'none'? 'none' : 'flex',
+        height: '100%',
+        width: '100%',
+        alignSelf: 'flex-end'
+      }}
+    >
     <TableContainer 
       sx={{
         display: display,
         marginTop: 'auto',
-        maxHeight: '30%',
-        flexGrow: 1
       }}
       component={Paper}
     >
@@ -54,5 +61,6 @@ export default function LocationTable(props) {
         </TableBody>
       </Table>
     </TableContainer>
+    </Box>
   );
 }

@@ -5,6 +5,7 @@ import { IconButton } from "@mui/material"
 import { Button } from "@mui/material"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import GestureIcon from "@mui/icons-material/Gesture"
+import CodeIcon from "@mui/icons-material/Code"
 import LayersIcon from "@mui/icons-material/Layers"
 import AddIcon from '@mui/icons-material/Add'
 
@@ -58,6 +59,13 @@ export function LayersPanel(props){
             }}
           >
             <GestureIcon />
+          </IconButton>
+          <IconButton
+            style={{
+              marginTop: '8px'
+            }}
+          >
+            <CodeIcon />
           </IconButton>
         </Box>
         <Box sx={{

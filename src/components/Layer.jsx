@@ -10,14 +10,63 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react'
+import { display } from "@mui/system";
+
+function makeColorGradients(colorMapValues) {
+  let gradients = ''
+  let c = colorMapValues
+  let n = c.R.length
+  gradients += `rgba(${c.R[n-1]},${c.G[n-1]},${c.B[n-1]},${1})`
+  gradients += `linear-gradient(90deg,`
+  for (let j=0; j< n; j++) {
+    gradients += `rgba(${c.R[j]},${c.G[j]},${c.B[j]},${1}) ${(j/(n-1))*100}%,`
+  }
+  gradients = gradients.slice(0,-1)
+  gradients += ')'
+  return gradients
+}
 
 export default function Layer(props){
   const image = props.image
   const [detailsOpen, setDetailsOpen] = React.useState(false)
   const [color, setColor] = React.useState(image.colorMap)
   let ArrowIcon = detailsOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> 
+  console.log(props.colorMapValues)
   let allColors = image.colorMaps().map((colorName) => {
-    return (<MenuItem value={colorName} key={colorName}>{colorName}</MenuItem>)
+    return (
+      <MenuItem value={colorName} key={colorName}>
+        
+        <Box
+          sx={{
+            display:'flex',
+            flexDirection: 'row',
+            width: '100%'
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            {colorName} 
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '20%',
+              ml: 'auto'
+            }}
+            style={{
+              background: makeColorGradients(props.getColorMapValues(colorName))
+            }}
+          >
+          </Box>
+          
+        </Box>
+      </MenuItem>
+    )
   })
   
   function handleDetails(){
@@ -28,6 +77,7 @@ export default function Layer(props){
     let clr = event.target.value
     let id = image.id
     console.log(clr)
+    console.log(id)
     props.onColorMapChange(id, clr)
     setColor(clr)
   }
