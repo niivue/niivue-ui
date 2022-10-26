@@ -105,12 +105,19 @@ export default function Layer(props){
             margin: 1,
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap', // useful for handling long file names
           }}
         >
-          <Typography>
+          <Typography
+            sx={{
+              wordBreak: 'break-word', // wrap long names
+              flexBasis: '75%' // allow for name wrapping for long names and alignment to the button
+            }}
+          >
             {image.name}
           </Typography>
+          
           <IconButton 
             onClick={handleDetails}
             style={{marginLeft:'auto'}}

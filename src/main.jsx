@@ -10,7 +10,9 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 const volumes = [
-  {url: './mni152.nii', name: 'mni152'}
+  {url: './mni152reallyreallyreallyreallyreallyLongName.nii'},
+  {url: './hippo.nii'},
+  
 ]
 ReactDOM.render(
   <React.StrictMode>

@@ -62,12 +62,14 @@ export default function NiiVue(props) {
   //
   // All subsequent imgaes should be added via a
   // button or drag and drop
-  React.useEffect(()=>{
-    props.volumes.map(async (vol)=>{
-      let image = await NVImage.loadFromUrl({url:vol.url})
-      nv.addVolume(image)
-      setLayers([...nv.volumes])
-    })
+  React.useEffect(async ()=>{
+    // props.volumes.map(async (vol)=>{
+    //   let image = await NVImage.loadFromUrl({url:vol.url})
+    //   nv.addVolume(image)
+    //   setLayers([...nv.volumes])
+    // })
+    await nv.loadVolumes(props.volumes)
+    setLayers([...nv.volumes])
   }, [])
 
   nv.opts.onImageLoaded = ()=>{
