@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react()],
   root: '.',
   base: './',
-	server: {
-  	fs: {
+  server: {
+    fs: {
       // Allow serving files from one level up to the project root
-    	allow: ['..']
+      allow: ['..']
     }
-  },
+  }
 })
