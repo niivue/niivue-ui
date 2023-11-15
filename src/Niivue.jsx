@@ -288,10 +288,6 @@ export default function NiiVue(props) {
     setLayers([...nv.volumes])
   }
 
-  nv.on('intensityRange', (nvimage) => {
-    // setIntensityRange(nvimage)
-  })
-
   return (
     <Box
       sx={{
