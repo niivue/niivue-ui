@@ -1,5 +1,7 @@
 # NiiVue UI
 
+# WARNING: this repo is a demo and is not very active anymore. Please see [niivue-apps](https://github.com/niivue/niivue-apps/tree/main) for a more active project. 
+
 [NiiVue](https://github.com/niivue/niivue) is a WebGL 2.0 medical image viewer for web environments. This user interface (UI) project (NiiVue UI) is a reference implementation of how controls (sliders, buttons, inputs) can be used to interact with core NiiVue functions. 
 
 This user interface extends NiiVue and allows user friendly interactions with medical images. We use React for our frontend framework, and React MUI for the material design controls. 
