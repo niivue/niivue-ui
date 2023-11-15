@@ -1,23 +1,15 @@
-import { Box, Divider, MenuItem } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Button } from "@mui/material";
-import { Select } from "@mui/material";
-import { InputLabel } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { Paper } from "@mui/material";
-import { IconButton } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { Box, MenuItem, Typography, Select, InputLabel, FormControl, Paper, IconButton } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
 import React from 'react'
-import { display } from "@mui/system";
 
 function makeColorGradients(colorMapValues) {
   let gradients = ''
-  let c = colorMapValues
-  let n = c.R.length
+  const c = colorMapValues
+  const n = c.R.length
   gradients += `rgba(${c.R[n - 1]},${c.G[n - 1]},${c.B[n - 1]},${1})`
   gradients += `linear-gradient(90deg,`
   for (let j = 0; j < n; j++) {
@@ -32,12 +24,11 @@ export default function Layer(props) {
   const image = props.image
   const [detailsOpen, setDetailsOpen] = React.useState(false)
   const [color, setColor] = React.useState(image.colorMap)
-  let ArrowIcon = detailsOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+  const ArrowIcon = detailsOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
   console.log(props.colorMapValues)
-  let allColors = image.colorMaps().map((colorName) => {
+  const allColors = image.colorMaps().map((colorName) => {
     return (
       <MenuItem value={colorName} key={colorName}>
-
         <Box
           sx={{
             display: 'flex',
@@ -48,7 +39,7 @@ export default function Layer(props) {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'row'
             }}
           >
             {colorName}
@@ -63,9 +54,7 @@ export default function Layer(props) {
             style={{
               background: makeColorGradients(props.getColorMapValues(colorName))
             }}
-          >
-          </Box>
-
+          />
         </Box>
       </MenuItem>
     )
@@ -76,8 +65,8 @@ export default function Layer(props) {
   }
 
   function handleColorChange(event) {
-    let clr = event.target.value
-    let id = image.id
+    const clr = event.target.value
+    const id = image.id
     console.log(clr)
     console.log(id)
     props.onColorMapChange(id, clr)
@@ -92,7 +81,7 @@ export default function Layer(props) {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column'
       }}
     >
       <Paper
@@ -108,7 +97,7 @@ export default function Layer(props) {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            flexWrap: 'wrap', // useful for handling long file names
+            flexWrap: 'wrap' // useful for handling long file names
           }}
         >
           <Typography
@@ -120,10 +109,7 @@ export default function Layer(props) {
             {image.name}
           </Typography>
 
-          <IconButton
-            onClick={handleDetails}
-            style={{ marginLeft: 'auto' }}
-          >
+          <IconButton onClick={handleDetails} style={{ marginLeft: 'auto' }}>
             {ArrowIcon}
           </IconButton>
         </Box>
@@ -131,7 +117,8 @@ export default function Layer(props) {
           sx={{
             display: detailsOpen ? 'flex' : 'none',
             flexDirection: 'column'
-          }}>
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
@@ -141,26 +128,21 @@ export default function Layer(props) {
             }}
             m={1}
           >
-            <IconButton
-            >
+            <IconButton>
               <KeyboardDoubleArrowUpIcon />
             </IconButton>
 
-            <IconButton
-            >
+            <IconButton>
               <KeyboardArrowUpIcon />
             </IconButton>
 
-            <IconButton
-            >
+            <IconButton>
               <KeyboardArrowDownIcon />
             </IconButton>
 
-            <IconButton
-            >
+            <IconButton>
               <KeyboardDoubleArrowDownIcon />
             </IconButton>
-
           </Box>
           <Box
             sx={{
@@ -173,19 +155,11 @@ export default function Layer(props) {
           >
             <FormControl>
               <InputLabel>Color</InputLabel>
-              <Select
-                style={{ width: '200px' }}
-                value={color}
-                label='Color'
-                size='small'
-                onChange={handleColorChange}
-              >
+              <Select style={{ width: '200px' }} value={color} label="Color" size="small" onChange={handleColorChange}>
                 {allColors}
               </Select>
             </FormControl>
-            <IconButton
-              onClick={handleDelete}
-            >
+            <IconButton onClick={handleDelete}>
               <DeleteIcon />
             </IconButton>
           </Box>

@@ -1,31 +1,28 @@
-import { Drawer } from "@mui/material"
-import { Box } from "@mui/material"
-import { Typography } from "@mui/material"
-import { IconButton } from "@mui/material"
-import { Button } from "@mui/material"
+import React from 'react'
+import { Drawer, Box, IconButton, Button } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import GestureIcon from "@mui/icons-material/Gesture"
-import CodeIcon from "@mui/icons-material/Code"
-import LayersIcon from "@mui/icons-material/Layers"
+import GestureIcon from '@mui/icons-material/Gesture'
+import CodeIcon from '@mui/icons-material/Code'
+import LayersIcon from '@mui/icons-material/Layers'
 import AddIcon from '@mui/icons-material/Add'
 
-export function LayersPanel(props){
-  function handleAddLayer(){
-    let input = document.createElement('input')
+export function LayersPanel(props) {
+  function handleAddLayer() {
+    const input = document.createElement('input')
     input.type = 'file'
-    input.onchange = async function (){
+    input.onchange = async function () {
       props.onAddLayer(input.files[0])
     }
     input.click()
   }
 
-	return (
-		<Drawer
+  return (
+    <Drawer
       open={props.open}
-			variant="temporary"
+      variant="temporary"
       anchor="left"
       sx={{
-        width: props.width,
+        width: props.width
       }}
     >
       <Box
@@ -51,7 +48,7 @@ export function LayersPanel(props){
               marginTop: '36px'
             }}
           >
-            <LayersIcon color='primary' />
+            <LayersIcon color="primary" />
           </IconButton>
           <IconButton
             style={{
@@ -68,50 +65,39 @@ export function LayersPanel(props){
             <CodeIcon />
           </IconButton>
         </Box>
-        <Box sx={{
-          width:props.width,
-          role: 'presentation',
-          display: 'flex',
-          height: '100%',
-          flexDirection:'column',
-          justifyContent:'flex-start',
-          ml: 1,
-          mr: 1
+        <Box
+          sx={{
+            width: props.width,
+            role: 'presentation',
+            display: 'flex',
+            height: '100%',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            ml: 1,
+            mr: 1
           }}
         >
           <Box
             sx={{
-              display:'flex'
-            }}>
-            <IconButton 
-              onClick={props.onToggleMenu}
-              style={{marginLeft:'auto'}}
-            >
+              display: 'flex'
+            }}
+          >
+            <IconButton onClick={props.onToggleMenu} style={{ marginLeft: 'auto' }}>
               <ArrowBackIcon />
             </IconButton>
           </Box>
           <Box
             sx={{
-              display:'flex',
-            }}   
+              display: 'flex'
+            }}
           >
-            <Button
-              onClick={handleAddLayer}
-              endIcon={<AddIcon />}
-              size='small'
-            >
+            <Button onClick={handleAddLayer} endIcon={<AddIcon />} size="small">
               Add Layer
             </Button>
           </Box>
           {props.children}
         </Box>
-
       </Box>
-
-      
     </Drawer>
-	)
+  )
 }
-
-
-

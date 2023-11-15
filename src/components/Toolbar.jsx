@@ -1,26 +1,20 @@
 import React from 'react'
-import { Box, Menu } from "@mui/material"
-import { IconButton } from "@mui/material"
-import {FormControl} from "@mui/material"
-import {Select} from "@mui/material"
-import {MenuItem} from "@mui/material"
-import {InputLabel} from "@mui/material"
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Box, IconButton, FormControl, Select, MenuItem, InputLabel } from '@mui/material'
+import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
-import LayersIcon from '@mui/icons-material/Layers'
 
-export default function Toolbar(props){
+export default function Toolbar(props) {
   const [sliceType, setSliceType] = React.useState('multi')
-  
-  function handleSliceTypeChange(e){
-    let newSliceType = e.target.value
-    let nvUpdateSliceType = props.nvUpdateSliceType
+
+  function handleSliceTypeChange(e) {
+    const newSliceType = e.target.value
+    const nvUpdateSliceType = props.nvUpdateSliceType
     setSliceType(newSliceType)
     nvUpdateSliceType(newSliceType)
   }
 
   return (
-    <Box 
+    <Box
       sx={{
         display: 'flex',
         width: '100%',
@@ -28,22 +22,20 @@ export default function Toolbar(props){
         flexDirection: 'row',
         justifyItems: 'left',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
       }}
     >
-      
-      <IconButton 
-        onClick={props.toggleLayers}
-      >
+      <IconButton onClick={props.toggleLayers}>
         <MenuIcon />
       </IconButton>
-  
-      <FormControl 
-        size='small'
+
+      <FormControl
+        size="small"
         sx={{
-          m:2,
+          m: 2,
           minWidth: 120
-        }}>
+        }}
+      >
         <InputLabel id="slice-type-label">Display mode</InputLabel>
         <Select
           labelId="slice-type-label"
@@ -58,12 +50,12 @@ export default function Toolbar(props){
           <MenuItem value={'multi'}>Multi</MenuItem>
           <MenuItem value={'3d'}>3D</MenuItem>
         </Select>
-</FormControl>
+      </FormControl>
 
-      <IconButton 
+      <IconButton
         onClick={props.toggleSettings}
         style={{
-          marginLeft:'auto'
+          marginLeft: 'auto'
         }}
       >
         <SettingsIcon />
@@ -71,4 +63,3 @@ export default function Toolbar(props){
     </Box>
   )
 }
-
